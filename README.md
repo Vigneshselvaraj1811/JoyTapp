@@ -73,7 +73,7 @@ joytapp-backend/
 ### 1. Clone & Install
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/Vigneshselvaraj1811/JoyTapp.git
 cd joytapp-backend
 python3 -m venv venv
 source venv/bin/activate        # Windows: venv\Scripts\activate
