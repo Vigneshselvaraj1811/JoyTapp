@@ -1,0 +1,1262 @@
+{
+	"info": {
+		"_postman_id": "5470d2dc-f044-453b-9c14-6210894e8562",
+		"name": "JoyTapp Backend API",
+		"description": "Complete API collection for JoyTapp Backend — Auth, Users, Posts, Interactions, Uploads.\n\n## Setup\n1. Set `base_url` variable to `http://localhost:8000/api/v1`\n2. Register → Login → tokens auto-saved to collection variables\n3. All protected routes use `{{access_token}}` automatically",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33478058",
+		"_collection_link": "https://hkb777.postman.co/workspace/hkb-Workspace~20dcd0eb-a586-4cef-822d-4b7f0d226e47/collection/33478058-5470d2dc-f044-453b-9c14-6210894e8562?action=share&source=collection_link&creator=33478058"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"  const res = pm.response.json();",
+									"  pm.collectionVariables.set('access_token', res.data.tokens.access_token);",
+									"  pm.collectionVariables.set('refresh_token', res.data.tokens.refresh_token);",
+									"  pm.collectionVariables.set('user_id', res.data.user.id);",
+									"  pm.test('Register successful', () => pm.expect(res.success).to.be.true);",
+									"  pm.test('Has access token', () => pm.expect(res.data.tokens.access_token).to.be.a('string'));",
+									"  pm.test('Has refresh token', () => pm.expect(res.data.tokens.refresh_token).to.be.a('string'));",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"vignesh_dev\",\n  \"email\": \"vignesh@example.com\",\n  \"password\": \"SecurePass123\",\n  \"full_name\": \"Vignesh Selvaraj\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"  const res = pm.response.json();",
+									"  pm.collectionVariables.set('access_token', res.data.access_token);",
+									"  pm.collectionVariables.set('refresh_token', res.data.refresh_token);",
+									"  pm.test('Login successful', () => pm.expect(res.success).to.be.true);",
+									"  pm.test('Token type is bearer', () => pm.expect(res.data.token_type).to.eql('bearer'));",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"vignesh@example.com\",\n  \"password\": \"SecurePass123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"  const res = pm.response.json();",
+									"  pm.collectionVariables.set('access_token', res.data.access_token);",
+									"  pm.collectionVariables.set('refresh_token', res.data.refresh_token);",
+									"  pm.test('Token refreshed', () => pm.expect(res.success).to.be.true);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"refresh_token\": \"{{refresh_token}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/refresh-token",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"refresh-token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Logout successful', () => pm.expect(pm.response.code).to.eql(200));",
+									"pm.collectionVariables.set('access_token', '');",
+									"pm.collectionVariables.set('refresh_token', '');"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"refresh_token\": \"{{refresh_token}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/logout",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register — Duplicate Email (409)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"vignesh2\",\n  \"email\": \"vignesh@example.com\",\n  \"password\": \"SecurePass123\",\n  \"full_name\": \"Duplicate User\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login — Wrong Password (401)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"vignesh@example.com\",\n  \"password\": \"WrongPassword\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Get My Profile",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Profile returned', () => pm.expect(pm.response.code).to.eql(200));",
+									"const res = pm.response.json();",
+									"pm.test('Has user id', () => pm.expect(res.data.id).to.be.a('string'));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/users/profile",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update My Profile",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Profile updated', () => pm.expect(pm.response.code).to.eql(200));",
+									"const res = pm.response.json();",
+									"pm.test('Bio updated', () => pm.expect(res.data.bio).to.eql('Backend developer at JoyTapp'));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"full_name\": \"Vignesh Selvaraj\",\n  \"bio\": \"Backend developer at JoyTapp\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/users/profile",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Profile Image URL",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/users/profile/image?image_url=https://joytapp-uploads.s3.us-east-1.amazonaws.com/uploads/user123/avatar.jpg",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"profile",
+								"image"
+							],
+							"query": [
+								{
+									"key": "image_url",
+									"value": "https://joytapp-uploads.s3.us-east-1.amazonaws.com/uploads/user123/avatar.jpg"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User by ID (Public)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users/{{user_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"{{user_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Profile — No Auth (403)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users/profile",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Posts",
+			"item": [
+				{
+					"name": "Create Post",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"  const res = pm.response.json();",
+									"  pm.collectionVariables.set('post_id', res.data.id);",
+									"  pm.test('Post created', () => pm.expect(res.success).to.be.true);",
+									"  pm.test('Post has id', () => pm.expect(res.data.id).to.be.a('string'));",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"My First Post\",\n  \"content\": \"This is the content of my first post. Hello JoyTapp!\",\n  \"tags\": [\"intro\", \"hello\"],\n  \"image_url\": null\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/posts",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"posts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Posts (Default Pagination)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Posts listed', () => pm.expect(pm.response.code).to.eql(200));",
+									"const res = pm.response.json();",
+									"pm.test('Has pagination fields', () => {",
+									"  pm.expect(res.data).to.have.property('total');",
+									"  pm.expect(res.data).to.have.property('total_pages');",
+									"  pm.expect(res.data.items).to.be.an('array');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/posts?page=1&page_size=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"posts"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "page_size",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Posts — Filter by Title",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/posts?title=First&page=1&page_size=5",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"posts"
+							],
+							"query": [
+								{
+									"key": "title",
+									"value": "First"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "page_size",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Posts — Filter by Date Range",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/posts?date_from=2024-01-01T00:00:00&date_to=2026-12-31T23:59:59&page=1&page_size=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"posts"
+							],
+							"query": [
+								{
+									"key": "date_from",
+									"value": "2024-01-01T00:00:00"
+								},
+								{
+									"key": "date_to",
+									"value": "2026-12-31T23:59:59"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "page_size",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Post by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Post found', () => pm.expect(pm.response.code).to.eql(200));",
+									"const res = pm.response.json();",
+									"pm.test('Correct post id', () => pm.expect(res.data.id).to.eql(pm.collectionVariables.get('post_id')));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/posts/{{post_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"posts",
+								"{{post_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Post",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Post updated', () => pm.expect(pm.response.code).to.eql(200));",
+									"const res = pm.response.json();",
+									"pm.test('Title changed', () => pm.expect(res.data.title).to.eql('Updated Post Title'));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Updated Post Title\",\n  \"content\": \"This content has been updated with more details.\",\n  \"tags\": [\"updated\", \"fastapi\"]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/posts/{{post_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"posts",
+								"{{post_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Post (Soft Delete)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Post soft-deleted', () => pm.expect(pm.response.code).to.eql(200));",
+									"pm.test('Success message', () => pm.expect(pm.response.json().message).to.include('deleted'));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/posts/{{post_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"posts",
+								"{{post_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Deleted Post (404)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/posts/{{post_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"posts",
+								"{{post_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Post — No Auth (403)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Should Fail\",\n  \"content\": \"No token provided\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/posts",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"posts"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Interactions",
+			"item": [
+				{
+					"name": "[Setup] Create Post for Interactions",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"  const res = pm.response.json();",
+									"  pm.collectionVariables.set('post_id', res.data.id);",
+									"  console.log('Interaction test post id:', res.data.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Post for Interaction Testing\",\n  \"content\": \"We will like and comment on this post.\",\n  \"tags\": [\"test\"]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/posts",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"posts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Like Post (Toggle ON)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Like toggled', () => pm.expect(pm.response.code).to.eql(200));",
+									"const res = pm.response.json();",
+									"pm.test('Liked = true', () => pm.expect(res.data.liked).to.be.true);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/posts/{{post_id}}/like",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"posts",
+								"{{post_id}}",
+								"like"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Like Post Again (Toggle OFF — Unlike)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Unlike toggled', () => pm.expect(pm.response.code).to.eql(200));",
+									"const res = pm.response.json();",
+									"pm.test('Liked = false', () => pm.expect(res.data.liked).to.be.false);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/posts/{{post_id}}/like",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"posts",
+								"{{post_id}}",
+								"like"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Comment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Comment added', () => pm.expect(pm.response.code).to.eql(201));",
+									"const res = pm.response.json();",
+									"pm.test('Has comment id', () => pm.expect(res.data.id).to.be.a('string'));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"content\": \"Great post! Really helpful content.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/posts/{{post_id}}/comment",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"posts",
+								"{{post_id}}",
+								"comment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Another Comment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"content\": \"Second comment — testing pagination.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/posts/{{post_id}}/comment",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"posts",
+								"{{post_id}}",
+								"comment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Comments (Paginated)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Comments returned', () => pm.expect(pm.response.code).to.eql(200));",
+									"const res = pm.response.json();",
+									"pm.test('Has pagination', () => {",
+									"  pm.expect(res.data.items).to.be.an('array');",
+									"  pm.expect(res.data).to.have.property('total');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/posts/{{post_id}}/comments?page=1&page_size=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"posts",
+								"{{post_id}}",
+								"comments"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "page_size",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Empty Comment (400 Validation)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"content\": \"   \"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/posts/{{post_id}}/comment",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"posts",
+								"{{post_id}}",
+								"comment"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Uploads",
+			"item": [
+				{
+					"name": "Get Pre-signed URL — Image Upload",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Presigned URL generated', () => pm.expect(pm.response.code).to.eql(200));",
+									"const res = pm.response.json();",
+									"pm.test('Has upload_url', () => pm.expect(res.data.upload_url).to.include('amazonaws.com'));",
+									"pm.test('Has file_url', () => pm.expect(res.data.file_url).to.be.a('string'));",
+									"pm.test('Has expiry', () => pm.expect(res.data.expires_in).to.eql(3600));",
+									"pm.environment && pm.environment.set('upload_url', res.data.upload_url);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"filename\": \"profile_photo.jpg\",\n  \"content_type\": \"image/jpeg\",\n  \"file_size_bytes\": 204800,\n  \"folder\": \"profiles\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/uploads/presigned-url",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"uploads",
+								"presigned-url"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Pre-signed URL — PNG Upload",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"filename\": \"post_image.png\",\n  \"content_type\": \"image/png\",\n  \"file_size_bytes\": 1048576,\n  \"folder\": \"posts\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/uploads/presigned-url",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"uploads",
+								"presigned-url"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Pre-signed URL — Blocked Type (400)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Blocked file type rejected', () => pm.expect(pm.response.code).to.eql(400));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"filename\": \"malware.exe\",\n  \"content_type\": \"application/octet-stream\",\n  \"file_size_bytes\": 1024,\n  \"folder\": \"uploads\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/uploads/presigned-url",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"uploads",
+								"presigned-url"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Pre-signed URL — File Too Large (400)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Oversized file rejected', () => pm.expect(pm.response.code).to.eql(400));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"filename\": \"huge_video.mp4\",\n  \"content_type\": \"image/jpeg\",\n  \"file_size_bytes\": 104857600,\n  \"folder\": \"uploads\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/uploads/presigned-url",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"uploads",
+								"presigned-url"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Pre-signed URL — No Auth (403)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"filename\": \"photo.jpg\",\n  \"content_type\": \"image/jpeg\",\n  \"file_size_bytes\": 102400,\n  \"folder\": \"uploads\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/uploads/presigned-url",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"uploads",
+								"presigned-url"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Health",
+			"item": [
+				{
+					"name": "Health Check",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Service healthy', () => pm.expect(pm.response.code).to.eql(200));",
+									"pm.test('Status is healthy', () => pm.expect(pm.response.json().status).to.eql('healthy'));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/health",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"health"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Swagger Docs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/docs",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"docs"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000/api/v1",
+			"type": "string"
+		},
+		{
+			"key": "access_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "refresh_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "user_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "post_id",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
